@@ -1,20 +1,20 @@
-# Use official Node image
-FROM node:18
+# Use lightweight base image
+FROM node:18-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Copy package files
+# Copy only package files first (better caching)
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install only production dependencies
+RUN npm install --omit=dev
 
-# Copy remaining files
+# Copy rest of the app
 COPY . .
 
 # Expose port
 EXPOSE 3000
 
-# Run app
-CMD ["npm", "start"]
+# Start app
+CMD ["node", "index.js"]
